@@ -1,0 +1,23 @@
+.overlay {
+  height: 0;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  background-color: black;
+  background-color: rgba(0, 0, 0, 0.7);
+  overflow-x: hidden;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+  -webkit-transition: 0.5s;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  top: 15px;
+  right: 40px;
+  font-size: 60px;
+  color: #86a8e7;
+  cursor: pointer;
+}
