@@ -1,102 +1,176 @@
-interface ITodo{
-    description:string;
-    completed:boolean;
-}
+function onPageLoaded() {
+  interface ITodo {
+    getDescription(): string;
+    changeСompleted(): void;
+    getID(): number;
+    createID(): number;
+  }
+  interface localStorageTodo {
+    description: string;
+    completed: boolean;
+    id: number;
+  }
 
-class Todo implements ITodo{
-    constructor(public description:string,
-        public completed: boolean){}
-}
+  class Todo implements ITodo {
+    readonly id: number;
+    constructor(
+      private description: string,
+      private completed: boolean = false
+    ) {
+      this.id = this.createID();
+    }
+    getDescription(): string {
+      return this.description;
+    }
+    changeСompleted(): void {
+      this.completed = !this.completed;
+    }
+    getID(): number {
+      return this.id;
+    }
+    createID(): number {
+      return Math.floor(Math.random() * Date.now());
+    }
+  }
 
-class TodoList{
-    private allTodos: Todo[]=new Array;
-    createTodoItem(description:string):number {
-        let newItem = new Todo(description, false);
-        let totalCount: number= this.allTodos.push(newItem);
-        return totalCount;
+  class TodoList {
+    private allTodos: Todo[] = new Array();
+
+    addTodoItem(description: string, completed?: boolean): Todo {
+      let newItem = new Todo(description, completed);
+      this.allTodos.push(newItem);
+      return newItem;
     }
-    allTodoItems():Todo[]{
-        return this.allTodos;
+    allTodoItems(): Todo[] {
+      return this.allTodos;
     }
-    deleteTodoItem(index:number):void{
+    deleteTodoItem(id: string): void {
+      const index = this.allTodos.findIndex((n) => n.id === +id);
+      if (index !== -1) {
         this.allTodos.splice(index, 1);
+      }
     }
-}
-enum KeyTypes{
+  }
 
-}
+  class ManagerTodoList {
+    private todoList = new TodoList();
 
-window.onload = function () {
-    let description =  <HTMLInputElement>document.querySelector("input.addtodo");
-    description.addEventListener("keypress", (event) => {
-        const keyEnter = 13;
-        if (event.code == keyEnter) {
-            toAlltask(description.value);
-        }
-    });
-    document.querySelector("button.add")?.addEventListener(
-        'click',()=>toAlltask(description.value)); 
-}
-const todo = new TodoList();
-
-function toAlltask(description:string){
-    if(description){
-        todo.createTodoItem(description);
-        let ul = <HTMLElement>document.querySelector("ul.todos");
-        let list="";
-        const icon="<i class='fa fa-trash-o'></i>";
-        
-        for(const item of todo.allTodoItems()){
-        list = "<li> " + item.description + icon +"</li>";}
-        ul.innerHTML = list;
+    createTodoItem(description: string, completed?: boolean): void {
+      if (description) {
+        const newItem = this.todoList.addTodoItem(description, completed);
+        const ul = <HTMLElement>document.querySelector("ul.todos");
+        const list = <HTMLElement>document.createElement("li");
+        list.id = `${newItem.getID()}`;
+        const icon = <HTMLElement>document.createElement("i");
+        icon.classList.add("fa", "fa-trash-o");
+        list.append(newItem.getDescription(), icon);
+        ul.appendChild(list);
+        this.addlistenerDeleteTodo(icon);
         (<HTMLInputElement>document.querySelector("input.addtodo")).value = "";
+      }
     }
-}
 
-(function loadTodos():void {
-    const data = localStorage.getItem("todos");
-    if (data) {
-        const ul = document.querySelector<HTMLInputElement>("ul.todos");
-        if (ul) {
-            ul.innerHTML = data;
-        }
+    saveTodos(): void {
+      if (this.todoList.allTodoItems().length > 0) {
+        localStorage.allTodoItems = JSON.stringify(
+          this.todoList.allTodoItems()
+        );
+      }
     }
-})();
-(function deleteTodo():void {
-        const deleteButtons = document.querySelector<HTMLElement>("i.fa-trash-o");
-        if(deleteButtons){
-            listenDeleteTodo(deleteButtons)};
-})();
 
-function listenDeleteTodo(element:HTMLElement) {
-    element.addEventListener("click",(event) => {
-        element.parentElement?.remove();
+    loadTodos(): void {
+      if (localStorage.allTodoItems) {
+        const array: localStorageTodo[] = JSON.parse(localStorage.allTodoItems);
+        array.map((obj) => this.createTodoItem(obj.description, obj.completed));
+      }
+    }
+
+    removeTodos(): void {
+      if (this.todoList.allTodoItems().length == 0) {
+        localStorage.removeItem(allTodoItems);
+      }
+    }
+
+    deleteTodo(icon: HTMLElement): void {
+      const li = this.getIdTodo(icon);
+      if (li) {
+        this.todoList.deleteTodoItem(li);
+      }
+    }
+
+    getIdTodo(icon: HTMLElement): string | void {
+      if (icon) {
+        const li = icon.parentElement?.id;
+        return li;
+      }
+    }
+
+    addlistenerDeleteTodo(icon: HTMLElement) {
+      icon.addEventListener("click", (event) => {
+        listenDeleteTodo(icon);
+        this.deleteTodo(icon);
+        this.removeTodos();
         event.stopPropagation();
-    });
-}
-
-const saveButton = document.querySelector<HTMLButtonElement>(".save");
-const clearButton = document.querySelector<HTMLButtonElement>("button.clear");
-const showTipsButton = document.querySelector<HTMLButtonElement>("button.showTips");
-const closeTipsButton = document.querySelector<HTMLButtonElement>("a.closeTips");
-const overlay = document.querySelector<HTMLDivElement>("div.overlay");
-const ul = document.querySelector<HTMLElement>("ul.todos");
-
-saveButton?.addEventListener("click", () => {
-    localStorage.setItem("todos", ul?.innerHTML||"");
-});
-clearButton?.addEventListener("click", () => {
-    if(ul){ul.innerHTML = "";
-}
-    localStorage.removeItem('todos');
-});
-showTipsButton?.addEventListener("click", () => {
-    if (overlay) {
-        overlay.style.height = "100%";
-    }   
-});
-closeTipsButton?.addEventListener("click", () => {
-    if (overlay) {
-        overlay.style.height = "0";
+      });
     }
-});
+  }
+
+  enum KeyTypes {
+    keyEnter = "Enter",
+  }
+
+  window.onload = function () {
+    let input = <HTMLInputElement>document.querySelector("input.addtodo");
+    input.addEventListener("keypress", (event) => {
+      const keyEnter = 13;
+      if (event.code == KeyTypes.keyEnter) {
+        managerTodoList.createTodoItem(input.value);
+      }
+    });
+    document
+      .querySelector("button.add")
+      ?.addEventListener("click", () =>
+        managerTodoList.createTodoItem(input.value)
+      );
+  };
+
+  const managerTodoList = new ManagerTodoList();
+  managerTodoList.loadTodos();
+
+  function listenDeleteTodo(element: HTMLElement) {
+    element.parentElement?.remove();
+  }
+
+  const saveButton = document.querySelector<HTMLButtonElement>(".save");
+  const clearButton = document.querySelector<HTMLButtonElement>("button.clear");
+  const showTipsButton = document.querySelector<HTMLButtonElement>(
+    "button.showTips"
+  );
+  const closeTipsButton = document.querySelector<HTMLButtonElement>(
+    "a.closeTips"
+  );
+  const overlay = document.querySelector<HTMLDivElement>("div.overlay");
+  const ul = document.querySelector<HTMLElement>("ul.todos");
+  const allTodoItems = "allTodoItems";
+
+  saveButton?.addEventListener("click", () => {
+    managerTodoList.saveTodos();
+  });
+  clearButton?.addEventListener("click", () => {
+    if (ul) {
+      ul.innerHTML = "";
+    }
+    localStorage.removeItem(allTodoItems);
+  });
+  showTipsButton?.addEventListener("click", () => {
+    if (overlay) {
+      overlay.style.height = "100%";
+    }
+  });
+  closeTipsButton?.addEventListener("click", () => {
+    if (overlay) {
+      overlay.style.height = "0";
+    }
+  });
+}
+document.addEventListener("DOMContentLoaded", onPageLoaded);

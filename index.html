@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/src/css/todo.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="/src/css/todo.css" />
     <script src="/app/todo.js" defer></script>
     <title>ToDo List</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="todo">
-        <h1>Список дел</h1>
-        <input type="text" placeholder="Добавить в список" class="addtodo">
-        <div class="todoList">
-            <ul class="todos"></ul>
-        </div>
-        <div class="buttons">
-            <button class="add">Добавить</button>
-            <button class="save">Сохранить</button>
-            <button class="clear">Очистить</button>
-            <button class="showTips">Справка</button>
-        </div>
+      <h1>Список дел</h1>
+      <input type="text" placeholder="Добавить в список" class="addtodo" />
+      <div class="todoList">
+        <ul class="todos"></ul>
+      </div>
+      <div class="buttons">
+        <button class="add">Добавить</button>
+        <button class="save">Сохранить</button>
+        <button class="clear">Очистить</button>
+        <button class="showTips">Справка</button>
+      </div>
     </div>
     <div class="overlay">
-        <a href="javascript:void(0)" class="closeTips">&times;</a>
-        <ul class="tips">
-            <li>Для добавления списка дел напишите текст в поле ввода и нажмите Ввод</li>
-            <li>Чтобы удалить один пункт, наведите на него и нажмите на значок корзины</li>
-            <li>Чтобы удалить все списки дел, нажмите "Очистить"</li>
-            <li>Нажмите "Сохранить", чтобы сохранить список дел на потом</li>
-        </ul>
+      <a href="javascript:void(0)" class="closeTips">&times;</a>
+      <ul class="tips">
+        <li>
+          Для добавления списка дел напишите текст в поле ввода и нажмите Ввод
+        </li>
+        <li>
+          Чтобы удалить один пункт, наведите на него и нажмите на значок корзины
+        </li>
+        <li>Чтобы удалить все списки дел, нажмите "Очистить"</li>
+        <li>Нажмите "Сохранить", чтобы сохранить список дел на потом</li>
+      </ul>
     </div>
-</body>
+  </body>
 </html>
