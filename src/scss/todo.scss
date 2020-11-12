@@ -24,3 +24,7 @@
   color: gray;
   text-decoration: line-through;
 }
+
+label {
+  user-select: none;
+}
