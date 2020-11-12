@@ -21,3 +21,8 @@
   color: #86a8e7;
   cursor: pointer;
 }
+
+.checked {
+  color: gray;
+  text-decoration: line-through;
+}

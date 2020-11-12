@@ -34,10 +34,20 @@ function onPageLoaded() {
             return this.allTodos;
         };
         TodoList.prototype.deleteTodoItem = function (id) {
-            var index = this.allTodos.findIndex(function (n) { return n.id === +id; });
+            var index = this.findItem(id);
             if (index !== -1) {
                 this.allTodos.splice(index, 1);
             }
+        };
+        TodoList.prototype.changeСompletedItem = function (id) {
+            var index = this.findItem(id);
+            if (index !== -1) {
+                this.allTodos[index].changeСompleted();
+            }
+        };
+        TodoList.prototype.findItem = function (id) {
+            var index = this.allTodos.findIndex(function (n) { return n.id === +id; });
+            return index;
         };
         return TodoList;
     }());
@@ -55,7 +65,8 @@ function onPageLoaded() {
                 icon.classList.add("fa", "fa-trash-o");
                 list.append(newItem.getDescription(), icon);
                 ul_1.appendChild(list);
-                this.addlistenerDeleteTodo(icon);
+                this.addListenerDeleteTodo(icon);
+                this.addListenerChangeСompletedTodo(list);
                 document.querySelector("input.addtodo").value = "";
             }
         };
@@ -77,24 +88,40 @@ function onPageLoaded() {
             }
         };
         ManagerTodoList.prototype.deleteTodo = function (icon) {
-            var li = this.getIdTodo(icon);
-            if (li) {
-                this.todoList.deleteTodoItem(li);
+            var id = this.getIdTodo(icon);
+            if (id) {
+                this.todoList.deleteTodoItem(id);
             }
         };
-        ManagerTodoList.prototype.getIdTodo = function (icon) {
+        ManagerTodoList.prototype.changeСompletedTodo = function (li) {
+            li.classList.toggle("checked");
+            var id = this.getIdTodo(li);
+            if (id) {
+                this.todoList.changeСompletedItem(id);
+            }
+        };
+        ManagerTodoList.prototype.getIdTodo = function (element) {
             var _a;
-            if (icon) {
-                var li = (_a = icon.parentElement) === null || _a === void 0 ? void 0 : _a.id;
-                return li;
+            if (element.id) {
+                return element.id;
+            }
+            else {
+                return (_a = element.parentElement) === null || _a === void 0 ? void 0 : _a.id;
             }
         };
-        ManagerTodoList.prototype.addlistenerDeleteTodo = function (icon) {
+        ManagerTodoList.prototype.addListenerDeleteTodo = function (icon) {
             var _this = this;
             icon.addEventListener("click", function (event) {
                 listenDeleteTodo(icon);
                 _this.deleteTodo(icon);
                 _this.removeTodos();
+                event.stopPropagation();
+            });
+        };
+        ManagerTodoList.prototype.addListenerChangeСompletedTodo = function (li) {
+            var _this = this;
+            li.addEventListener("click", function (event) {
+                _this.changeСompletedTodo(li);
                 event.stopPropagation();
             });
         };

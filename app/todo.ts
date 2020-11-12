@@ -41,14 +41,28 @@ function onPageLoaded() {
       this.allTodos.push(newItem);
       return newItem;
     }
+
     allTodoItems(): Todo[] {
       return this.allTodos;
     }
+
     deleteTodoItem(id: string): void {
-      const index = this.allTodos.findIndex((n) => n.id === +id);
+      const index = this.findItem(id);
       if (index !== -1) {
         this.allTodos.splice(index, 1);
       }
+    }
+
+    changeСompletedItem(id: string): void {
+      const index = this.findItem(id);
+      if (index !== -1) {
+        this.allTodos[index].changeСompleted();
+      }
+    }
+
+    findItem(id: string): number {
+      const index = this.allTodos.findIndex((n) => n.id === +id);
+      return index;
     }
   }
 
@@ -65,7 +79,8 @@ function onPageLoaded() {
         icon.classList.add("fa", "fa-trash-o");
         list.append(newItem.getDescription(), icon);
         ul.appendChild(list);
-        this.addlistenerDeleteTodo(icon);
+        this.addListenerDeleteTodo(icon);
+        this.addListenerChangeСompletedTodo(list);
         (<HTMLInputElement>document.querySelector("input.addtodo")).value = "";
       }
     }
@@ -92,24 +107,40 @@ function onPageLoaded() {
     }
 
     deleteTodo(icon: HTMLElement): void {
-      const li = this.getIdTodo(icon);
-      if (li) {
-        this.todoList.deleteTodoItem(li);
+      const id = this.getIdTodo(icon);
+      if (id) {
+        this.todoList.deleteTodoItem(id);
       }
     }
 
-    getIdTodo(icon: HTMLElement): string | void {
-      if (icon) {
-        const li = icon.parentElement?.id;
-        return li;
+    changeСompletedTodo(li: HTMLElement): void {
+      li.classList.toggle("checked");
+      const id = this.getIdTodo(li);
+      if (id) {
+        this.todoList.changeСompletedItem(id);
       }
     }
 
-    addlistenerDeleteTodo(icon: HTMLElement) {
+    getIdTodo(element: HTMLElement): string | void {
+      if (element.id) {
+        return element.id;
+      } else {
+        return element.parentElement?.id;
+      }
+    }
+
+    addListenerDeleteTodo(icon: HTMLElement): void {
       icon.addEventListener("click", (event) => {
         listenDeleteTodo(icon);
         this.deleteTodo(icon);
         this.removeTodos();
+        event.stopPropagation();
+      });
+    }
+
+    addListenerChangeСompletedTodo(li: HTMLElement): void {
+      li.addEventListener("click", (event) => {
+        this.changeСompletedTodo(li);
         event.stopPropagation();
       });
     }
