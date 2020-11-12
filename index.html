@@ -14,7 +14,53 @@
   <body>
     <div class="todo">
       <h1>Список дел</h1>
-      <input type="text" placeholder="Добавить в список" class="addtodo" />
+      <div>
+        <input type="text" placeholder="Добавить в список" class="addTodo" />
+        <input type="date" placeholder="Добавить дедлайн" class="addDeadline" />
+      </div>
+      <div class="radio">
+        <label
+          ><input
+            type="radio"
+            name="filter"
+            id="filter0"
+            value="0"
+            checked
+          />Без фильтров</label
+        >
+        <label
+          ><input
+            type="radio"
+            name="filter"
+            id="filter1"
+            value="1"
+          />Сделано</label
+        >
+        <label
+          ><input
+            type="radio"
+            name="filter"
+            id="filter2"
+            value="2"
+          />Несделано</label
+        >
+        <label
+          ><input
+            type="radio"
+            name="filter"
+            id="filter3"
+            value="3"
+          />Завтра</label
+        >
+        <label
+          ><input
+            type="radio"
+            name="filter"
+            id="filter4"
+            value="4"
+          />Неделя</label
+        >
+      </div>
       <div class="todoList">
         <ul class="todos"></ul>
       </div>
@@ -40,6 +86,7 @@
         </li>
         <li>Чтобы удалить все списки дел, нажмите "Очистить"</li>
         <li>Нажмите "Сохранить", чтобы сохранить список дел на потом</li>
+        <li>Вы можете отфильтровать ваш список</li>
       </ul>
     </div>
   </body>
